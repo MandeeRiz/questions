@@ -27,7 +27,6 @@ type question struct {
 }
 
 func main() {
-	fmt.Println(randomNum())
 	router := gin.Default()
 	router.GET("/", getAllQuestions)
 	router.GET("/:id", getQuestionByID)
@@ -41,13 +40,10 @@ func getAllQuestions(c *gin.Context) {
 
 func getQuestionByID(c *gin.Context) {
 	params := c.Param("id")
-	//if questionList[params] doesnt exist return error
 	for k, _ := range questionList {
 		if params == k {
 			c.JSON(http.StatusOK, questionList[params])
 			return
-		}
-		if params != k {
 		}
 	}
 	c.JSON(http.StatusBadRequest, "message: id was not found")
