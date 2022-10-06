@@ -2,17 +2,24 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
+func randomNum() int {
+	rand.Seed(time.Now().UTC().UnixNano())
+	return rand.Intn(len(questionList))
+}
+
 var questionList = map[string]question{
-	"1": {"How are you today?"},
-	"2": {"What are you up to?"},
-	"3": {"Can I come and visit?"},
-	"4": {"What is your favorite color?"},
-	"5": {"What do you need help with most often?"},
+	"0": {"How are you today?"},
+	"1": {"What are you up to?"},
+	"2": {"Can I come and visit?"},
+	"3": {"What is your favorite color?"},
+	"4": {"What do you need help with most often?"},
 }
 
 type question struct {
@@ -20,9 +27,11 @@ type question struct {
 }
 
 func main() {
+	fmt.Println(randomNum())
 	router := gin.Default()
 	router.GET("/", getAllQuestions)
 	router.GET("/:id", getQuestionByID)
+	router.GET("/surprise", getSurpriseQuestion)
 	router.Run("localhost:8080")
 }
 
@@ -44,4 +53,10 @@ func getQuestionByID(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusBadRequest, "message: id was not found")
+}
+
+func getSurpriseQuestion(c *gin.Context) {
+	num := randomNum()
+	numm := fmt.Sprintf("%v", num)
+	c.JSON(http.StatusOK, questionList[numm])
 }
