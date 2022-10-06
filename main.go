@@ -48,8 +48,6 @@ func getQuestionByID(c *gin.Context) {
 			return
 		}
 		if params != k {
-			fmt.Println(k)
-			fmt.Println(params)
 		}
 	}
 	c.JSON(http.StatusBadRequest, "message: id was not found")
