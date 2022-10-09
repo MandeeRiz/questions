@@ -4,33 +4,32 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func randomNum() int {
-	rand.Seed(time.Now().UTC().UnixNano())
 	return rand.Intn(len(questionList))
 }
 
 var questionList = map[string]question{
-	"0": {"How are you today?"},
-	"1": {"What are you up to?"},
-	"2": {"Can I come and visit?"},
-	"3": {"What is your favorite color?"},
-	"4": {"What do you need help with most often?"},
+	"0": {0, "How are you today?"},
+	"1": {1, "What are you up to?"},
+	"2": {2, "Can I come and visit?"},
+	"3": {3, "What is your favorite color?"},
+	"4": {4, "What do you need help with most often?"},
 }
 
 type question struct {
+	Id       int    `json: 0`
 	Question string `json: "How are you today?"`
 }
 
 func main() {
 	router := gin.Default()
-	router.GET("/", getAllQuestions)
-	router.GET("/:id", getQuestionByID)
-	router.GET("/surprise", getSurpriseQuestion)
+	router.GET("/questions", getAllQuestions)
+	router.GET("question/:id", getQuestionByID)
+	router.GET("question/random", getRandomQuestion)
 	router.Run("localhost:8080")
 }
 
@@ -39,18 +38,17 @@ func getAllQuestions(c *gin.Context) {
 }
 
 func getQuestionByID(c *gin.Context) {
-	params := c.Param("id")
-	for k, _ := range questionList {
-		if params == k {
-			c.JSON(http.StatusOK, questionList[params])
-			return
-		}
+	param := c.Param("id")
+	_, exisits := questionList[param]
+	if exisits {
+		c.JSON(http.StatusOK, questionList[param])
+		return
 	}
 	c.JSON(http.StatusBadRequest, "message: id was not found")
 }
 
-func getSurpriseQuestion(c *gin.Context) {
+func getRandomQuestion(c *gin.Context) {
 	num := randomNum()
-	numm := fmt.Sprintf("%v", num)
-	c.JSON(http.StatusOK, questionList[numm])
+	stringNum := fmt.Sprint(num)
+	c.JSON(http.StatusOK, questionList[stringNum])
 }
