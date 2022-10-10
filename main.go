@@ -39,8 +39,8 @@ func getAllQuestions(c *gin.Context) {
 
 func getQuestionByID(c *gin.Context) {
 	param := c.Param("id")
-	_, exisits := questionList[param]
-	if exisits {
+	_, exists := questionList[param]
+	if exists {
 		c.JSON(http.StatusOK, questionList[param])
 		return
 	}
